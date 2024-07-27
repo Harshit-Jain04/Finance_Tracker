@@ -1,0 +1,83 @@
+{% extends 'home.html' %}
+
+{% block content %}
+<h3>Budget</h3>
+<div class="manage" style="display: flex;">
+<button onclick="window.location.href = '/expense_category'">Add Budget</button>
+<button onclick="window.location.href = '/add_income'">Add Income</button>
+</div>
+
+<table class="budget-table">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Limit</th>
+            <th>Pending</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for goal in budget %}
+        <tr>
+            <td>{{goal.category}}</td>
+            <td>{{goal.limit}}</td>
+            <td>{{goal.pending}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<style>
+    button {
+    background-color: #ffffff; /* Green */
+    border: none;
+    color: rgb(0, 0, 0);
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 5px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #f978f9;
+}
+    
+
+h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.budget-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: auto;
+}
+
+.budget-table th, .budget-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.budget-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.budget-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.budget-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.budget-table th, .budget-table td {
+    text-align: center;
+}
+</style>
+{% endblock %}

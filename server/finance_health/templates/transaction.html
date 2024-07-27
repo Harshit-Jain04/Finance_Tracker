@@ -1,0 +1,163 @@
+{% extends 'home.html' %}
+
+{% block content %}
+<style>
+    h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: auto;
+}
+
+.transaction-table th, .transaction-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.transaction-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.transaction-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.transaction-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.transaction-table th, .transaction-table td {
+    text-align: center;
+}
+#buttons{
+    display: flex;
+}
+.btn {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 2px 1px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.btn-delete {
+    background-color: #f44336; /* Red */
+}
+
+.btn-delete:hover {
+    background-color: #e53935;
+}
+    button {
+    background-color: #ffffff; /* Green */
+    border: none;
+    color: rgb(0, 0, 0);
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 5px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #f978f9;
+}
+.hello{
+    display: none;
+}
+</style>
+<div id="buttons">
+    <button onclick="window.location.href = '/add_trans'">Add Transaction</button>
+    <form id="upload-form" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" id="image" accept=".jpg, .png">
+        <button type="submit">Upload</button>
+    </form>
+    
+    <script>
+         document.getElementById('upload-form').addEventListener('submit', async function (event) {
+                event.preventDefault();
+                const formData = new FormData();
+                formData.append('image', document.getElementById('image').files[0]);
+
+                const response = await fetch('/image/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Error uploading image');
+                }
+            });
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        </script>
+    </script>
+    
+</div>
+
+<h3>Transaction History</h3>
+<table class="transaction-table">
+    <thead>
+        <tr>
+            <th>Actions</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in transactions %}
+        <tr>
+            <td>
+                <button class="btn" onclick="window.location.href = '/edit_trans/{{transaction.id}}'">Edit</button>
+                <button class="btn btn-delete"
+                    onclick="window.location.href = '/delete_trans/{{transaction.id}}'">Delete</button>
+            </td>
+            <td>{{transaction.date}}</td>
+            <td>{{transaction.description}}</td>
+            <td>{{transaction.category}}</td>
+            <td>{{transaction.amount}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

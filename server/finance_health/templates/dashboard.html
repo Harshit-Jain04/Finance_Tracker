@@ -1,0 +1,171 @@
+{% extends 'home.html' %}
+
+
+{% block content %}
+
+            <section class="dashboard">
+                <div class="cards">
+                    <div class="card">
+                        <h3>{{balance}}</h3>
+                        <p>Balance</p>
+                    </div>
+                    <div class="card">
+                        <h3>{{income}}</h3>
+                        <p>Income</p>
+                    </div>
+                    <div class="card">
+                        <h3>{{expense}}</h3>
+                        <p>Expenses</p>
+                    </div>
+                    <div class="card">
+                        <h3>{{budget}}</h3>
+                        <p>Budget</p>
+                    </div>
+                    <div class="card">
+                        <h3>{{saving}}</h3>
+                        <p>Savings</p>
+                    </div>
+                    
+                </div>
+                <div class="finances">
+                    <canvas id="financesChart"></canvas>
+                    <p id="chart data" style="display: none;">{{chart}}</p>
+                    <canvas id = 'BudgetChart'></canvas>
+                    <p id="Budget data" style="display: none;">{{chart2}}</p>
+                </div>
+                <div class="transaction-history">
+                    <h2>Recent Transactions</h2>
+                    <table class="transaction-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transaction in transactions %}
+                            <tr>
+                                <td>{{transaction.date}}</td>
+                                <td>{{transaction.description}}</td>
+                                <td>{{transaction.category}}</td>
+                                <td>{{transaction.amount}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            
+            </section>
+            <style>
+                
+
+h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+body, html {
+    overflow: hidden;
+}
+.transaction-history {
+    overflow-y: scroll;
+}
+.transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: auto;
+}
+
+.transaction-table th, .transaction-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.transaction-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.transaction-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.transaction-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.transaction-table th, .transaction-table td {
+    text-align: center;
+}
+
+            </style>
+            <script>
+                fetch('/bar_chart').then(response => response.json()).then(chart => {
+                    var ctx = document.getElementById('financesChart').getContext('2d');
+
+                    var data = {
+                        labels: ['Finances Overview'],
+                        datasets: [{
+                            label: 'Income',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1,
+                            data: chart['income_data']
+                        }, {
+                            label: 'Expenses',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1,
+                            data: chart['expense_data']
+                        }, {
+                            label: 'Savings',
+                            backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                            borderColor: 'rgba(255, 206, 86, 1)',
+                            borderWidth: 1,
+                            data: chart['saving_data']
+                        }]
+                    };
+                    console.log(data);
+                    // Create the chart
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: data
+                    });
+                }).catch(error => {
+                    console.error(error);
+                });
+                fetch('/pie_chart').then(response => response.json()).then(chart2 => {
+                
+                
+                var ct = document.getElementById('BudgetChart').getContext('2d');
+                var dat = {
+                        labels:chart2['label'] ,
+                        datasets: [{
+                            data: chart2['data'], // Example data, replace with your actual data
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(255, 206, 86, 0.5)',
+                                'rgba(75, 192, 192, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    };
+                var myChart = new Chart(ct, {
+                        type: 'pie',
+                        data: dat
+                    });
+                }).catch(error => {
+                    console.error(error);
+                });
+            </script>
+
+{% endblock %}

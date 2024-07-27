@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f5f9;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #233044;
+    color: white;
+    height: 100vh;
+    
+}
+
+.sidebar .brand h2 {
+    margin: 0;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.sidebar .menu a {
+    display: block;
+    padding: 15px;
+    color: white;
+    text-decoration: none;
+    border-bottom: 1px solid #3a4758;
+}
+
+.sidebar .menu a:hover {
+    background-color: #3a4758;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.header .user-info {
+    display: flex;
+    align-items: center;
+    padding: 3px;
+}
+
+.header .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.dashboard .cards {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.dashboard .card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    flex: 1;
+    margin-right: 20px;
+}
+
+.dashboard .card:last-child {
+    margin-right: 0;
+}
+
+.finances {
+    background-color: white;
+    padding: 10px;
+    justify-content: space-around;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    height: 200px;
+    width: auto;
+    display:flex;
+}
+
+
+
+
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>FINANCES</h2>
+            </div>
+            <nav class="menu">
+                
+                <a href="/dashboard">Dashboard</a>
+                <a href="/transactions">Transaction</a>
+                <a href="/budget_goal">Budget</a>
+                <a href="/visualise">Reports</a>
+                <a href="/logout">Logout</a>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <div class="header">
+                <div class="user-info">
+                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="User Avatar" class="user-avatar">
+                    <span>Welcome, {{request.user}}</span>
+                </div>
+            </div>
+            
+            {% block content %}{% endblock %}
+
+        </main>
+    </div>
+    
+    
+</body>
+
+</html>

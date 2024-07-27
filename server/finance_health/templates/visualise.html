@@ -1,0 +1,158 @@
+{% extends 'home.html' %}
+
+{% block content %}
+<h3>Reports</h3>
+<div class="chart">
+    <h5>Income vs Expenses vs Savings</h5>
+    <div class="bar_chart">
+        <canvas id="bar_chart"></canvas>
+    
+    </div>
+    <h5>Expenses Category</h5>
+    <div class="pie_chart">
+        <canvas id="pie_chart"></canvas>
+    
+    </div>
+    <h5>Daily Expenses</h5>
+    <div class="financesChart">
+        <canvas id="financesChart"></canvas>
+    
+    </div>
+</div>
+<style>
+    /* Main heading */
+/* Main heading */
+h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Sub-heading */
+h5 {
+    font-size: 18px;
+    color: #666;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* Chart container */
+.chart {
+    height: calc(100vh - 100px); /* Adjust as needed */
+    overflow-y: scroll; /* Make the container scrollable */
+ /* Add padding for better spacing */
+}
+
+/* Individual chart */
+.bar_chart,
+.pie_chart,
+.financesChart {
+    width: auto;
+    height: 450px; /* Adjust height as needed */
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+body,html{
+    overflow: hidden;
+    height: 100%;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    fetch('/bar_chart').then(response => response.json()).then(chart => {
+            var ctx = document.getElementById('bar_chart').getContext('2d');
+
+            var data = {
+                labels: ['Finances Overview'],
+                datasets: [{
+                    label: 'Income',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    data: chart['income_data']
+                }, {
+                    label: 'Expenses',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    data: chart['expense_data']
+                }, {
+                    label: 'Savings',
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1,
+                    data: chart['saving_data']
+                }]
+            };
+    
+            // Create the chart
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: data
+            });
+        }).catch(error => {
+            console.error(error);
+        });
+        fetch('/pie_chart').then(response => response.json()).then(chart2 => {
+
+
+                var ct = document.getElementById('pie_chart').getContext('2d');
+                var dat = {
+                    labels: chart2['label'],
+                    datasets: [{
+                        data: chart2['data'], // Example data, replace with your actual data
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                };
+                var myChart = new Chart(ct, {
+                    type: 'pie',
+                    data: dat
+                });
+            }).catch(error => {
+                console.error(error);
+            });
+        fetch('/expense_chart').then(response => response.json()).then(chart => {
+
+            var ctx = document.getElementById('financesChart').getContext('2d');
+
+            var data = {
+                labels: chart['label'],
+                datasets: [{
+                    label: 'Expenses',
+                    data: chart['data'],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: data});
+        }).catch(error => {
+            console.error(error);});
+</script>
+{% endblock %}
